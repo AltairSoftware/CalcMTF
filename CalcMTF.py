@@ -15,17 +15,6 @@ maxspfr = 1 #グラフ化する際の最大空間周波数
 fig, axs = plt.subplots(nrows=2, ncols=3, figsize=(16, 8), tight_layout=True) #図の準備
 
 
-def upsampling(img): #グレースケールの画像を入れると一つの画素を4つに分割したものを出力する
-  resultImage = np.zeros((len(img)*2, len(img[0])*2))
-  for i in range(len(img)):
-    for j in range(len(img[0])):
-      resultImage[2*i][2*j] = img[i][j]
-      resultImage[2*i+1][2*j] = img[i][j]
-      resultImage[2*i][2*j+1] = img[i][j]
-      resultImage[2*i+1][2*j+1] = img[i][j]
-  return resultImage
-
-
 def calcPosAng(img): #ラドン変換後の画像を入力するとエッジラインの位置と傾斜角を返す
   pos = 0
   ang = 0
@@ -115,9 +104,8 @@ biImage = cv2.bilateralFilter(targetImage, 15, 20, 20) #バイラテラルフィ
 grayImage = cv2.cvtColor(biImage, cv2.COLOR_BGR2GRAY) #グレースケール化
 otsuImage = cv2.threshold(grayImage, 0, 255, cv2.THRESH_OTSU) # 大津の二値化
 npImage = np.array(otsuImage[1], dtype='float64') #型変換
-upImage = upsampling(npImage) #アップサンプリング
-axs[0,0].set_title("Grayscale and Upsampling")
-axs[0,0].imshow(upImage, cmap=plt.cm.Greys_r)
+axs[0,0].set_title("Grayscale")
+axs[0,0].imshow(npImage, cmap=plt.cm.Greys_r)
 
 sobelImage = filters.sobel(npImage) # ソーベルフィルタでエッジ検出
 axs[0,1].set_title("Edge")
